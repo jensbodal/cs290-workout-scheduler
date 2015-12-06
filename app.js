@@ -19,7 +19,7 @@ app.set('port', process.env.PORT || 9000);
 
 function selectTable(query, callback) {
     var tableData;
-    pool.query('SELECT ' + query + ' FROM workouts', function(err,rows,fields) {
+    pool.query('SELECT *, DATE_FORMAT(date, "%Y-%m-%d") AS date FROM workouts', function(err,rows,fields) {
         if(err) {
             console.log(err);
             next(err);
@@ -72,7 +72,13 @@ app.get('/reset-table', function(req, res, next) {
 });
 
 app.post('/insert', function(req, res) {
-    console.log(req.body);
+    console.log(req.body.lbs);
+    if (req.body.lbs === "true") {
+        req.body.lbs = 1;
+    }
+    else {
+        req.body.lbs = 0;
+    }
     pool.query("INSERT INTO workouts SET ?",
         req.body,
         function(err, results) {
@@ -80,6 +86,7 @@ app.post('/insert', function(req, res) {
                 next(err);
                 return;
         }
+        req.body.id = results.insertId;
         res.send(req.body);
     });
 });
