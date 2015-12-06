@@ -1,5 +1,8 @@
 extends layout
 block content
+  script(type='text/javascript').
+    var deleteIcon = !{JSON.stringify(deleteIcon)};
+    var editIcon = !{JSON.stringify(editIcon)};
   script(src="/javascripts/tableLogic.js")
   if notice
     p Updated row #{notice}.
@@ -50,13 +53,11 @@ block content
         if sqlTable
           each entry in sqlTable
             tr(id='#{entry.id}')
-              td.name(contenteditable="true")= entry.name
-              td.reps(contenteditable="true")= entry.reps
-              td.weight(contenteditable="true")= entry.weight
-              td.date(contenteditable="true")= entry.date
-              td.lbs(contenteditable="true")= entry.lbs
-  #test
-    br
-    br
-    br
-    a(href="/") Go home 
+              td.name(contenteditable="false")= entry.name
+              td.reps(contenteditable="false")= entry.reps
+              td.weight(contenteditable="false")= entry.weight
+              td.date(contenteditable="false")= entry.date
+              td.lbs(contenteditable="false")= entry.lbs
+              td.tableTools
+                i(id="edit-#{entry.id}", class="#{editIcon}")
+                i(id="delete-#{entry.id}", class="#{deleteIcon}")

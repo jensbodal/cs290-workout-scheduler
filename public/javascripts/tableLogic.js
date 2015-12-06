@@ -1,4 +1,19 @@
-document.addEventListener('DOMContentLoaded', bindFormSubmit, false);
+// document.addEventListener('DOMContentLoaded', bindFormSubmit, false);
+$(document).ready(function() {
+    bindFormSubmit();
+    bindEditButtons();
+    bindDeleteButtons();
+});
+
+function bindEditButtons() {
+    $("#edit-1").click(function(event) {
+        alert("d");
+    });
+}
+
+function bindDeleteButtons() {
+
+}
 
 function bindFormSubmit() {
     $("#btn-submit").click(function(event) {
@@ -37,6 +52,9 @@ function bindFormSubmit() {
                 newRow += newColumn("weight", response.weight);
                 newRow += newColumn("date", response.date);
                 newRow += newColumn("lbs", response.lbs);
+                newRow += "<td class='tableTools'>";
+                newRow += "<i id='edit-" + response.id + "' class='"+editIcon+"'></i>";
+                newRow += "<i id='delete-" + response.id + "' class='"+deleteIcon+"'></i>";
 
                 $('#sqlTable' + ' tbody').append(newRow);
             },

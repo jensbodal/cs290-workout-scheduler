@@ -49,6 +49,8 @@ function getContext(type, req, isPost) {
 app.get('/', function(req, res) {
     selectTable("*", function(tableData) {
         res.locals.sqlTable = tableData;
+        res.locals.deleteIcon = "fa fa-trash fa-1x";
+        res.locals.editIcon = "fa fa-pencil fa-1x";
         res.render('home', {title: 'Table Stuff'});
     });
 });
