@@ -1,20 +1,62 @@
 extends layout
-
 block content
+  script(src="/javascripts/tableLogic.js")
   if notice
     p Updated row #{notice}.
-  if sqlTable
-    Sql size = #{sqlTable.length}
+  form#inputForm
     table
-      each entry in sqlTable
+      div.input
         tr
-          each item in entry
-            td= JSON.stringify(item)
-  if inserted
-    p #{inserted}
-  if deleted
-    p= JSON.stringify(deleted)
-    - var numRows = JSON.stringify(deleted.affectedRows)  
-    p Deleted #{numRows} rows.
-  else
-    p nothing
+          td Name
+          td
+            input(type="text", name="name")
+        tr
+          td Repetitions
+          td
+            input(type="number", name="reps")
+        tr
+          td Weight
+          td
+            input(type="number", name="weight")
+        tr
+          td Date
+          td
+            input(type="date", name="date")
+        tr
+          td Units in Lbs.
+          td
+            input(type="checkbox", name="lbs" checked)
+      div.actions
+        tr
+          td(colspan=2, align="center")
+            input(type="submit", id="btn-submit", value="TEST SUBMIT")
+        
+  br
+  br
+  table#sqlTable
+    thead
+      tr
+        th.
+          Name
+        th.
+          Reps
+        th.
+          Weight
+        th.
+          Date
+        th.
+          lbs
+      tbody
+        if sqlTable
+          each entry in sqlTable
+            tr(id='#{entry.id}')
+              td.name(contenteditable="true")= entry.name
+              td.reps(contenteditable="true")= entry.reps
+              td.weight(contenteditable="true")= entry.weight
+              td.date(contenteditable="true")= entry.date
+              td.lbs(contenteditable="true")= entry.lbs
+  #test
+    br
+    br
+    br
+    a(href="/") Go home 
