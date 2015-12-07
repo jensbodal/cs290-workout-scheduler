@@ -51,6 +51,7 @@ app.get('/', function(req, res) {
         res.locals.sqlTable = tableData;
         res.locals.deleteIcon = "fa fa-trash fa-1x";
         res.locals.editIcon = "fa fa-pencil fa-1x";
+        res.locals.saveIcon = "fa fa-floppy-o fa-2x";
         res.render('home', {title: 'Table Stuff'});
     });
 });
@@ -93,43 +94,41 @@ app.post('/insert', function(req, res) {
     });
 });
 
-app.get('/update', function(req, res, next) {
-    pool.query("SELECT * FROM workouts WHERE id=?", [req.query.id], function(err, result) {
+app.post('/update', function(req, res, next) {
+    pool.query("SELECT * FROM workouts WHERE id=?", [req.body.id], function(err, results) {
         if(err) {
             next(err);
             return;
         }   
-        if(result.length == 1) {
-            var curVals = result[0];
-            pool.query("UPDATE workouts SET name=?, done=?, due=? WHERE id=? ",
-                [req.query.name || curVals.name, 
-                req.query.done || curVals.done,
-                req.query.due || curVals.due, 
-                req.query.id],
-                function(err, result) {
+        if(results.length == 1) {
+            var curVals = results[0];
+            pool.query("UPDATE workouts SET name=?, reps=?, weight=?, date=?, lbs=? WHERE id=? ",
+                [req.body.name || curVals.name, 
+                req.body.reps || curVals.reps,
+                req.body.weight || curVals.weight,
+                req.body.date || curVals.date,
+                req.body.lbs || curVals.lbs,
+                req.body.id],
+                function(err, iresult) {
                     if(err) {
                         next(err);
                         return;
                     }
-                    res.locals.notice = req.query.id;
-                    selectTable("*", function(tableData) {
-                        res.locals.sqlTable = tableData;
-                        res.render('home');
-                    });
+                    console.log(iresult);
                 });
         }
     });
     console.log("Update finished?");
 });
 
-app.get('/delete', function(req, res, next) {
-    pool.query("DELETE FROM workouts WHERE id=?", [req.query.id], function(err, result) {
+app.post('/delete', function(req, res, next) {
+    pool.query("DELETE FROM workouts WHERE id=?", [req.body.id], function(err, result) {
         if(err) {
             next(err);
             return;
         }
         res.locals.deleted = result;
-        res.render('home');
+        res.send(req.body);
     });
 });
 

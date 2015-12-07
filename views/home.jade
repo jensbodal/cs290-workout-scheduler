@@ -3,6 +3,7 @@ block content
   script(type='text/javascript').
     var deleteIcon = !{JSON.stringify(deleteIcon)};
     var editIcon = !{JSON.stringify(editIcon)};
+    var saveIcon = !{JSON.stringify(saveIcon)};
   script(src="/javascripts/tableLogic.js")
   if notice
     p Updated row #{notice}.
@@ -36,7 +37,7 @@ block content
         
   br
   br
-  table#sqlTable
+  table#sqlTable(class="display" width="80%")
     thead
       tr
         th.
@@ -52,12 +53,16 @@ block content
       tbody
         if sqlTable
           each entry in sqlTable
-            tr(id='#{entry.id}')
+            tr(id='workout-#{entry.id}')
               td.name(contenteditable="false")= entry.name
               td.reps(contenteditable="false")= entry.reps
               td.weight(contenteditable="false")= entry.weight
               td.date(contenteditable="false")= entry.date
               td.lbs(contenteditable="false")= entry.lbs
-              td.tableTools
+              td(id='wo-tools-#{entry.id}').tableTools
                 i(id="edit-#{entry.id}", class="#{editIcon}")
                 i(id="delete-#{entry.id}", class="#{deleteIcon}")
+
+
+  #testing
+    p Here
