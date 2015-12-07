@@ -7,7 +7,7 @@ block content
   script(src="/javascripts/tableLogic.js")
   if notice
     p Updated row #{notice}.
-  form#inputForm
+  form#inputForm(class="pure-form pure-form-stacked")
     table
       div.input
         tr
@@ -37,7 +37,7 @@ block content
         
   br
   br
-  table#sqlTable(width="50%")
+  table#sqlTable(class="pure-table pure-table-bordered")
     thead
       tr
         th.

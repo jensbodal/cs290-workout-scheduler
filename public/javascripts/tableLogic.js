@@ -3,6 +3,11 @@ $(document).ready(function() {
     bindEditButtons();
     bindDeleteButtons();
     bindFormSubmit();
+    $("#sqlTable").keydown(function(e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+        }
+    });
 });
 
 function bindEditButtons() {
