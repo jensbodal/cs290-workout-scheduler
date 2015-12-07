@@ -93,17 +93,17 @@ function newColumn(title, value) {
 
 function editRow(source) {
     var id = source.id.replace("edit-", "");
-    toggleRowEditable(id, true);   
+    toggleRowEditable(id, true, function(){});   
 
 }
 
-function toggleRowEditable(rowId, editMode) {
+function toggleRowEditable(rowId, editMode, callback) {
     var container = $('#workout-'+rowId);
     var row = $('table#sqlTable tr#workout-'+rowId);
     var name = $(row).find(".name")[0];
     var reps = $(row).find(".reps")[0];
     var weight = $(row).find(".weight")[0];
-    var date = $(row).find(".weight")[0];
+    var date = $(row).find(".date")[0];
     var lbs = $(row).find(".lbs")[0];
     
     if (editMode) {
@@ -134,12 +134,14 @@ function toggleRowEditable(rowId, editMode) {
       var replaceIcons = "<i id='edit-" + rowId + "' class='"+editIcon+"'></i>";
       replaceIcons += "<i id='delete-" + rowId + "' class='"+deleteIcon+"'></i>";
       $(tools).html(replaceIcons); 
-      var delBtn = $("#delete-"+response.rowId);
-      var edtBtn = $("#edit-"+response.rowId);
+      var delBtn = $("#delete-"+rowId);
+      var edtBtn = $("#edit-"+rowId);
       addButtonListener(delBtn[0], deleteRow);
       addButtonListener(edtBtn[0], editRow);
 
     }
+
+    return callback();
 }
 
 function deleteRow(source) {
@@ -164,5 +166,54 @@ function deleteRow(source) {
 
 function saveRow(source) {
     var id = source.id.replace("save-", "");
-    toggleRowEditable(id, false);   
+    toggleRowEditable(id, false, function() {
+        var row = $('table#sqlTable tr#workout-'+id);
+        var name = $($(row).find(".name")[0]).text();
+        var reps = $($(row).find(".reps")[0]).text();
+        var weight = $($(row).find(".weight")[0]).text();
+        var date = $($(row).find(".date")[0]).text();
+        var lbs = $($(row).find(".lbs")[0]).text();
+       
+        console.log(name);
+
+        if (name == "") {
+            return;
+        }
+
+        reps = reps || 0;
+        weight = weight || 0;
+        date = date || "0000-00-00";
+
+        var url = "/update";
+        var payload = {id: id, name: name, reps: reps, weight: weight, date: date, lbs: lbs};
+
+        $.ajax({
+          type: "POST",
+          url: url,
+          data: payload,
+          success: function(response) {
+              var newRow = "<tr id=\"workout-" + response.id + "\">";
+              newRow += newColumn("name", response.name);
+              newRow += newColumn("reps", response.reps);
+              newRow += newColumn("weight", response.weight);
+              newRow += newColumn("date", response.date);
+              newRow += newColumn("lbs", response.lbs);
+              newRow += "<td id='wo-tools-"+response.id+"' class='tableTools'>";
+              newRow += "<i id='edit-" + response.id + "' class='"+editIcon+"'></i>";
+              newRow += "<i id='delete-" + response.id + "' class='"+deleteIcon+"'></i>";
+              
+              console.log(response.name);
+              $(row).replaceWith(newRow);
+              
+              var delBtn = $("#delete-"+response.id);
+              var edtBtn = $("#edit-"+response.id);
+              addButtonListener(delBtn[0], deleteRow);
+              addButtonListener(edtBtn[0], editRow);
+          },
+          error: function(response) {
+              console.log("Something went wrong...");
+              console.log(response);
+          }
+        });
+    });   
 }

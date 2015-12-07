@@ -75,7 +75,6 @@ app.get('/reset-table', function(req, res, next) {
 });
 
 app.post('/insert', function(req, res) {
-    console.log(req.body.lbs);
     if (req.body.lbs === "true") {
         req.body.lbs = 1;
     }
@@ -95,7 +94,7 @@ app.post('/insert', function(req, res) {
 });
 
 app.post('/update', function(req, res, next) {
-    pool.query("SELECT * FROM workouts WHERE id=?", [req.body.id], function(err, results) {
+    pool.query("SELECT * FROM workouts WHERE id=(?)", [req.body.id], function(err, results) {
         if(err) {
             next(err);
             return;
@@ -111,14 +110,27 @@ app.post('/update', function(req, res, next) {
                 req.body.id],
                 function(err, iresult) {
                     if(err) {
+                        console.log("error2");
                         next(err);
                         return;
                     }
-                    console.log(iresult);
+                    pool.query('SELECT *, DATE_FORMAT(date, "%Y-%m-%d") AS date FROM workouts WHERE id=(?)', 
+                        [req.body.id],
+                        function(err,row,fields) {
+                            if(err) {
+                                console.log(err);
+                                next(err);
+                                return;
+                            }
+                        console.log(row[0]);
+                        res.send(row[0]);
+                    });
                 });
         }
+        else {
+            console.log("No results found... is id missing?");
+        }
     });
-    console.log("Update finished?");
 });
 
 app.post('/delete', function(req, res, next) {
