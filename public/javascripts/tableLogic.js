@@ -78,6 +78,11 @@ function bindFormSubmit() {
                 var edtBtn = $("#edit-"+response.id);
                 addButtonListener(delBtn[0], deleteRow);
                 addButtonListener(edtBtn[0], editRow);
+                document.getElementById("inputForm").elements["name"].value = "";
+                document.getElementById("inputForm").elements["reps"].value = "";
+                document.getElementById("inputForm").elements["weight"].value = "";
+                document.getElementById("inputForm").elements["date"].value = "";
+                document.getElementById("inputForm").elements["lbs"].checked = true;
             },
             error: function(response) {
                 console.log("Something went wrong...");
